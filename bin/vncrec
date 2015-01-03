@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require 'optparse'
+require 'vncrec'
+
+options = VNCRec::Recorder::DEFAULTS
+
+OptionParser.new do |opts|
+  opts.on('--pix_fmt F', 'Specify pixel format. List available with --pix_fmts') do |d|
+    options[:pix_fmt] = d.dup
+  end
+  opts.on('--pix_fmts', 'List available pix_fmts') do
+    puts 'Available pixel formats:'
+    puts "bgr8\t8 bits color palette"
+    puts "bgra\t32 bits color palette"
+    puts
+    exit 0
+  end
+  opts.on('--debug', 'Enable debugger, gem pry-debugger required') do
+    require 'pry-byebug'
+    options[:debug] = true
+  end
+  opts.on('-e ENC', '--encoding', 'Specify encoding') do |e|
+    name = "ENC_#{e.upcase}".to_sym
+    if VNCRec.constants.index(name)
+      options[:encoding] = VNCRec.const_get(name)
+    else
+      puts 'Unsupported encoding type. Pass option --encodings to see a list of available encodings.'
+      exit 1
+    end
+  end
+  opts.on('--encodings', 'Print list of available encodings') do
+    puts 'Available encodings are:'
+    puts "\traw"
+    puts "\thextile"
+    puts "\tzrle(not yet supported)"
+    puts
+    exit
+  end
+  opts.on('-g GEOM', '--geometry GEOM', 'Screen resolution, <X>x<Y>') do |opt|
+    unless opt =~ /\d+x\d+/
+      puts 'Unknown screen resolution format, use <x>x<y>'
+      exit 1
+    end
+    options[:geometry] = opt
+  end
+  opts.on('-h', '--help', 'Display this message') do
+    puts opts
+    exit
+  end
+  opts.on('--logging', 'Enable logging to stderr') do
+    options[:logging] = true
+  end
+  opts.on('-o NAME', '--output', 'Specify filename to write to. Special name is "stdout"') do |f|
+    options[:filename] = f.to_s
+  end
+  opts.on('-p PORT', '--port', 'Choose port to listen on') do |p|
+    options[:port] = p.to_i
+  end
+  opts.on('-r RATE', '--framerate <rate>', 'Specify framerate') do |r|
+    options[:fps] = r.to_i
+  end
+  opts.on('-s', '--server SERVER', 'Specify host address') do |s|
+    options[:host] = s
+  end
+end.parse!
+
+v = VNCRec::Recorder.new(options)
+v.on_exit << ->() { exit }
+Signal.trap('INT') { v.running? ? v.stop : exit }
+Signal.trap('USR1') do
+  puts v.filesize
+  $stdout.flush
+end
+
+v.run
+loop do
+  sleep 100
+end
