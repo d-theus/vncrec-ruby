@@ -1,5 +1,5 @@
 begin
-  require 'enchex_c'
+  require 'vncrec/rfb/enchex_c'
 rescue
 
 module VNCRec

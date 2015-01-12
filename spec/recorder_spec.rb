@@ -86,7 +86,7 @@ describe Rec do
         it 'rec listens on specified port' do
           rec.run
           sleep 1
-          expect(pid_using_port 5500).to eq Process.pid
+          expect(pid_using_port 5900).to eq Process.pid
         end
       end
     end
@@ -123,7 +123,7 @@ describe Rec do
     describe 'option port:', port: true do
       let(:rec) { Rec.new(port: port) }
       context 'valid integer given' do
-        let(:port) { 5500 }
+        let(:port) { 5900 }
 
         it 'does not raise error' do
           expect { rec }.not_to raise_error
@@ -156,7 +156,7 @@ describe Rec do
 
       context 'when no filename given' do
         it 'file with default name exists' do
-          expect { f1 }.to change { File.exist?('5500.raw') }.from(false).to(true)
+          expect { f1 }.to change { File.exist?('5900.raw') }.from(false).to(true)
         end
       end
       context 'when given' do
@@ -187,7 +187,7 @@ describe Rec do
     context 'when connected' do
       before { rec.run }
       it 'returns true' do
-        launch_vnc_server 5500
+        launch_vnc_server 5900
         expect(rec.running?).to be_truthy
       end
     end

@@ -15,7 +15,7 @@ describe 'vncrec' do
     end
 
     context 'when connected' do
-      before { launch_vnc_server 5500 }
+      before { launch_vnc_server 5900 }
 
       it 'INT stops' do
         expect_no_timeout(3) do

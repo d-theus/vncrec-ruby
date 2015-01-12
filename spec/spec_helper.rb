@@ -29,11 +29,11 @@ RSpec.configure do |config|
   end
 
   config.before(:each, port: true) do
-    free_port 5500
+    free_port 5900
   end
 
   config.after(:each, port: true) do
-    free_port 5500
+    free_port 5900
   end
 
   config.after(:each) do
