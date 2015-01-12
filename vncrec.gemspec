@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['d-theus']
   spec.email         = ['slma0x02@gmail.com']
   spec.summary       = 'VNC session recording'
-  spec.description   = 'Connect to/receive reverse-connect \
-  from VNC server and record session as raw video or any video \
+  spec.description   = 'Connect to/receive reverse-connect
+  from VNC server and record session as raw video or any video
   format FFmpeg supports'
   spec.homepage      = ""
   spec.license       = 'MIT'
