@@ -176,6 +176,25 @@ describe Rec do
       end
     end
   end
+  describe 'filesize do', port: true, focus: true do
+    let(:rec) { Rec.new(filename: 'somefile.mp4') }
+    context 'when running' do
+      it 'returns > 0' do
+        rec.run
+        launch_vnc_server 5900
+        sleep 3.5
+        expect(rec.filesize).to be > 0
+      end
+    end
+
+    context 'when not yet running' do
+      it 'returns 0' do
+        rec.run
+        sleep 0.5
+        expect(rec.filesize).to eq(0)
+      end
+    end
+  end
   describe '#running?', port: true, vnc: true do
     let(:rec) { Rec.new(filename: '/dev/null') }
     context 'when not yet connected' do

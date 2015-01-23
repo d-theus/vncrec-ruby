@@ -115,7 +115,8 @@ module VNCRec
     # Return current size of file
     # @return size [Integer]
     def filesize
-      @file.size
+      return @file.size if @file
+      0
     end
 
     # Find out if main loop thread is alive.
