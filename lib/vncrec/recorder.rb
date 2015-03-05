@@ -139,9 +139,8 @@ module VNCRec
     end
 
     def substitute_filename
-      File.rename(@filename,
-                  @filename.gsub('DATE', '%Y_%m_%d_%Hh_%Mm_%Ss')
-                 ) if @recording_starttime && @filename['DATE']
+      File.rename(@filename, @filename.gsub(
+        'DATE', @recording_starttime.strftime('%Y_%m_%d_%Hh_%Mm_%Ss'))) if @recording_starttime && @filename['DATE']
     end
 
     def close_proxy

@@ -153,6 +153,7 @@ describe Rec do
       let(:f1) { Rec.new }
       let(:f2) { Rec.new(filename: 'file') }
       let(:f3) { Rec.new(filename: '/root/file') }
+      let(:f4) { Rec.new(filename: 'rec_1_DATE.mp4').run; }
 
       context 'when no filename given' do
         it 'file with default name exists' do
@@ -174,9 +175,21 @@ describe Rec do
           expect { f3 }.to raise_error(/Cannot create file .*/)
         end
       end
+      context 'when template DATE is given' do
+        fit 'file with template substitute as name exist', port: true do
+          f4
+          launch_vnc_server 5900
+          expect do
+            sleep 3
+            `killall -KILL x11vnc`
+            sleep 0.5
+            puts Dir.glob('*')
+          end.to change { Dir.glob('rec_1_*_*_*_*h_*m_*s.mp4').grep(/_\d\dh_/).size }.from(0).to(1)
+        end
+      end
     end
   end
-  describe 'filesize do', port: true, focus: true do
+  describe 'filesize do', port: true do
     let(:rec) { Rec.new(filename: 'somefile.mp4') }
     context 'when running' do
       it 'returns > 0' do
