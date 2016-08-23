@@ -64,6 +64,10 @@ OptionParser.new do |opts|
   opts.on('-s', '--server SERVER', 'Specify host address') do |s|
     options[:host] = s
   end
+
+  opts.on('--password PASSWORD', 'Specify password to use') do |s|
+    options[:auth] = [VNCRec::RFB::Authentication::VncAuthentication, s]
+  end
 end.parse!
 
 v = VNCRec::Recorder.new(options)

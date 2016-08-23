@@ -28,6 +28,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rspec-its'
   spec.add_development_dependency 'activesupport'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry-byebug'
 
   spec.requirements << 'ffmpeg'
   spec.requirements << 'x11vnc'

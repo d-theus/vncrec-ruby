@@ -18,15 +18,20 @@ module VNCRec
       # @param pf [Hash] pixel format:
       #  * {VNCRec::PIX_FMT_BGR8} - 8 bits per pixel
       #  * {VNCRec::PIX_FMT_BGR32} - 32 bits per pixel
-      # @param w width of the screen area
-      # @param h height of the screen area
-      def initialize(io, rfbv, enc, pf)
+      # @param auth [Array]:
+      # * Constant class e.g. VNCRec::Authentication::VncAuthentication
+      # * optional argument, e.g. password string
+      def initialize(io, rfbv, enc, pf, auth)
         @io = io
         @version = rfbv
         @enc = enc
         @pf = pf
+        @auth = auth.first.new(@io, *auth.drop(1))
       end
 
+      # @param w width of the screen area
+      # @param h height of the screen area
+      # @param bpp bits per pixel
       def prepare_framebuffer(w, h, bpp)
         @w = w
         @h = h
@@ -43,24 +48,10 @@ module VNCRec
         version = @io.readpartial 12
         @io.syswrite(@version + "\n")
 
-        # security
-        num_of_st = @io.readbyte
-        if num_of_st == 0 # failed
-          reason_len = @io.readpartial(4).unpack('L>')[0]
-          reason = @io.readpartial(reason_len)
-          fail reason
-        else
-          num_of_st.times do
-            @io.readbyte
-          end
-        end
+        @auth.handshake
 
-        reply = [1].pack('C') # security type:none
-        @io.syswrite reply
-
-        stype = (@io.readpartial 4).unpack('H' * 8)
         # client init
-        @io.syswrite reply
+        @io.syswrite "\x01"
 
         # server init
         w = @io.readpartial(2).unpack('S>')[0]
@@ -69,8 +60,6 @@ module VNCRec
         nlen = @io.readpartial(4).unpack('L>')[0]
         @name = @io.readpartial nlen
         return [w, h, @name]
-      rescue
-        return nil
       end
 
       # Set a way that server should use to represent pixel data

@@ -13,6 +13,7 @@ end
 
 require 'vncrec/constants.rb'
 require 'vncrec/rfb/proxy.rb'
+require 'vncrec/rfb/authentication.rb'
 require 'vncrec/writers.rb'
 
 module VNCRec
@@ -20,13 +21,14 @@ module VNCRec
 
   class Recorder
     DEFAULTS = {
-      :pix_fmt      => :BGR8,
-      :debug        => nil,
-      :encoding     => VNCRec::ENC_RAW,
-      :filename     => nil,
-      :fps          => 6,
-      :input        => nil,
-      :port         => 5900
+      :pix_fmt       => :BGR8,
+      :debug         => nil,
+      :encoding      => VNCRec::ENC_RAW,
+      :filename      => nil,
+      :fps           => 6,
+      :input         => nil,
+      :port          => 5900,
+      :auth          => [VNCRec::RFB::Authentication::None]
     }
 
     # @param geometry [String] geometry of the screen area to capture(+x,y offset is not implemented yet)
@@ -61,6 +63,9 @@ module VNCRec
       @host = options[:host]
 
       @client = nil
+
+      @auth = options[:auth]
+      @password = options[:password]
 
       @framerate = options[:fps]
       fail ArgumentError if !@framerate.is_a?(Numeric) || @framerate <= 0
@@ -164,7 +169,7 @@ module VNCRec
         @logger.info 'got client' if @logging
 
       end
-      @client = VNCRec::RFB::Proxy.new(@server, 'RFB 003.008', @enc, @pix_fmt)
+      @client = VNCRec::RFB::Proxy.new(@server, 'RFB 003.008', @enc, @pix_fmt, @auth)
       @recording_starttime = Time.now if @filename.include?('DATE')
 
       w, h, name = @client.handshake
