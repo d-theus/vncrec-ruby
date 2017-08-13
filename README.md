@@ -4,6 +4,10 @@ VNCRec
 VNCRec is a gem that provides you 
 tools to record VNC session.
 
+##Installation
+
+`gem install vncrec`
+
 ##Usage
 There is a binary called `vncrec`, which is a recorder tool.
 
