@@ -1,5 +1,9 @@
 # Changelog
 
+##1.0.6
+
+* silence system which ffmpeg
+
 ##1.0.5
 
 * Fixed popen cmdline redirection which somehow was broken on Debian jessie
