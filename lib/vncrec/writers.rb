@@ -46,6 +46,7 @@ module VNCRec
       #  * ffmpeg_out_opts
       #  See {VNCRec::Recorder#initialize} for descriptions
       def initialize(filename, opts = {})
+        abort("Can't find ffmpeg in PATH!") unless system('which ffmpeg', [1, 2] => File::NULL)
         @filename = filename
         @fps = opts[:fps] || 12
         pf = opts.fetch(:pix_fmt) { fail 'Undefined pixel format' }
@@ -59,7 +60,7 @@ module VNCRec
         #{@ffmpeg_iv_opts} \
       -i pipe:0 \
         #{@ffmpeg_ia_opts} \
-        #{@ffmpeg_out_opts} #{@filename} &>/dev/null"
+        #{@ffmpeg_out_opts} #{@filename}"
         @data_avail = false
         spawn
       end
@@ -123,7 +124,7 @@ module VNCRec
       end
 
       def routine
-        @output = IO.popen(@cmd)
+        @output = IO.popen(@cmd, 2 => File.open(File::NULL))
         @output_ready = true
         IO.select([STDIN])
         @th = Thread.new(thread_func)

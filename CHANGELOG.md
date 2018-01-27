@@ -1,5 +1,9 @@
 # Changelog
 
+##1.0.5
+
+* Fixed popen cmdline redirection which somehow was broken on Debian jessie
+
 ##1.0.4
 
 * Added authentication

@@ -38,3 +38,6 @@ you can specify encoder you want by passing .mp4 or .flv, etc. If no filename
 specified, `vncrec` assumes raw. There is also a way to 
 record raw video by specifying filename with extension .raw. This way FFmpeg is 
 not required.
+
+_NOTE:_ you should use avconv (from libav-tools) on some debian systems. Please, make
+  a symlink, e.g. `ln -s /usr/bin/avconv /usr/bin/ffmpeg`.
